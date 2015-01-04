@@ -1,0 +1,2 @@
+s/\(^auth-user-pass$\)/\1 \/config\/vpn-passwd/
+s/^reneg-sec [0-9]*$/reneg-sec 3600/

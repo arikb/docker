@@ -1,0 +1,21 @@
+#!/bin/sh
+set -e
+TUN=/dev/net/tun
+OPENVPN=/usr/sbin/openvpn
+CONFIG=/config/vpn-config
+MOD_CONFIG=/tmp/vpn-config-modified
+CONFIG_MOD_SCRIPT=/opt/config-modify
+CONFIG_ADD_SCRIPT=/opt/config-add
+if [ ! -c $TUN ]
+then
+	[ -e $TUN ] && rm $TUN
+	[ ! -d /dev/net ] && mkdir /dev/net
+	mknod $TUN c 10 200
+	chown root.vpn $TUN
+	chmod 1666 $TUN
+fi
+# modify the config gile
+sed -f $CONFIG_MOD_SCRIPT $CONFIG > $MOD_CONFIG
+cat $CONFIG_ADD_SCRIPT >> $MOD_CONFIG
+
+exec $OPENVPN $MOD_CONFIG
